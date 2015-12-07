@@ -1,0 +1,21 @@
+{
+  "name": "subschema-setup",
+  "version": "1.0.0",
+  "description": "Sets up subschema webpack and things",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "moch test/*-test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "expect": "^1.13.0",
+    "mocha": "^2.3.4"
+  },
+  "dependencies": {
+    "bluebird": "^3.0.6"
+  }
+}
