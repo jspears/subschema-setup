@@ -22,7 +22,7 @@ var api = {
                 validators: ['required']
             }
         },
-        fields: 'name, route'
+        fields: ['name', 'route']
     }
 }
 module.exports = api;

@@ -38,11 +38,14 @@ module.exports = {
             {
                 test: /\.js(x)?$/,
                 exclude: [
-                    /node_modules\/(?!(subschema|component-playground|react-))/,
                     join('src'),
                     join('public'),
                 ],
                 loaders: ['babel?stage=0']
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
             },
             {test: /\.(png|jpe?g|mpe?g|gif)$/, loader: 'url?limit=100000'},
             {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
@@ -69,7 +72,7 @@ module.exports = {
     resolve: {
         extensions: ['', '.js', '.jsx'],
         alias: {
-            'subschema': join('node_modules/subschema/src/index.jsx'),
+            'subschema': join('node_modules/subschema/src'),
             'Subschema': join('node_modules/subschema/src/index.jsx'),
             'react': join('node_modules/react'),
             'subschema-styles': join('node_modules/subschema/src/styles')

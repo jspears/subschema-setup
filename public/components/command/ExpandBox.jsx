@@ -2,7 +2,7 @@
 import React, {Component, Children} from 'react';
 import ExpandBoxLess from './ExpandBox.less';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Dom from 'subschema/../Dom';
+import Dom from 'subschema/Dom';
 
 export default class ExpandBox extends Component {
 
@@ -63,8 +63,11 @@ export default class ExpandBox extends Component {
     renderChild = (child, idx)=> {
         var isSelected = idx === this.state.selected;
 
-        return child == null ? null : <div className={'expandable-box '+(isSelected ? 'open' : this.state.selected == -1 ? '' : 'out')}>
-            {React.cloneElement(child, {isSelected,onClick:this.handleChildClick.bind(this, idx)})}</div>
+        return child == null ? null : React.cloneElement(child, {
+            isSelected,
+            hasSelection: this.state.selected > -1,
+            onClick: this.handleChildClick.bind(this, idx)
+        });
     }
 
     render() {

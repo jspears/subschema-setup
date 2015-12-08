@@ -1,7 +1,7 @@
 "use strict";
 
-var bbq = require('bluebird'), util = require('./util'), toArray = util.toArray, commands = require('./commands');
-var chain = util.chain;
+var bbq = require('bluebird'), util = require('./util'), toArray = util.toArray;
+
 
 function process(conf, done) {
     var cmdMap = {};
@@ -20,8 +20,12 @@ function process(conf, done) {
         }
 
         var ret = cmdMap[cmd] = bbq.map(pre, handleCmd).then(function () {
-            conf.message(`Running ${cmd}`)
-            return bbq.promisify(exe)(conf);
+            conf.message(cmd, `Running ${cmd}`)
+            return bbq.promisify(exe)(conf).then(function () {
+                conf.message(cmd, `Success ${cmd}`);
+            }, function () {
+                conf.message(cmd, `Error ${cmd}`);
+            });
         }).then(function () {
             return bbq.map(post, handleCmd)
         });
