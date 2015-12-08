@@ -14,7 +14,7 @@ var api = {
             },
             schema: 'SchemaBuilder'
         },
-        fields: 'name,schema'
+        fields: ['name', 'schema']
     }
 };
 

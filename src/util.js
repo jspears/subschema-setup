@@ -1,8 +1,6 @@
 "use strict";
 
-var fs = require('fs'),
-    exec = require('child_process').exec,
-    pslice = Array.prototype.slice,
+var pslice = Array.prototype.slice,
     api = {
         chain,
         noNulls,
@@ -63,16 +61,17 @@ function noNulls(val) {
 }
 function pExec(cmd, options) {
     return promise((resolve, reject)=> {
-        exec(cmd, options, function (err, stdout, stderr) {
+       /* exec(cmd, options, function (err, stdout, stderr) {
             if (err) {
                 return reject(stderr + '');
             }
             return resolve();
-        });
+        });*/
+        resolve();
     });
 }
 function loadJson(val, done) {
-    fs.readFile(current('package.json'), {}, function (e, file) {
+   /* fs.readFile(current('package.json'), {}, function (e, file) {
         if (e) {
             return done(e);
         }
@@ -81,7 +80,9 @@ function loadJson(val, done) {
         } catch (e) {
             return done(e);
         }
-    });
+    });*/
+    done();
 }
+
 
 module.exports = api;

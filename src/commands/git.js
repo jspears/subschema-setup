@@ -35,7 +35,7 @@ var api = {
                 }
             }
         },
-        fields: 'remotes'
+        fields: ['remotes']
     }
 };
 

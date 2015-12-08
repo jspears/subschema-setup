@@ -1,0 +1,42 @@
+//shamelessly borrowed from
+//http://codepen.io/johnegraham2/pen/Lniyd
+
+.expandable-boxes-container {
+  width: 80%;
+  margin: 30px auto;
+}
+
+.expandable-boxes {
+  position: relative;
+}
+
+.expandable-box {
+  width: 30%;
+  min-height: 40px;
+  max-height: 40px;
+  float: left;
+  margin: 0 3% 20px 0;
+  border: 1px solid #999;
+  border-radius: 12px;
+  padding: 9px;
+  box-sizing: border-box;
+  transition: all .3s ease-in;
+
+  &.open {
+    border-color: #dd0000;
+    width: 96%;
+    min-height: 260px;
+    max-height: 100%;
+    margin: 0;
+  }
+
+  &.out {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+  }
+}
