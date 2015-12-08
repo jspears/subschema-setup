@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Editor from 'react-md-editor';
 import PropTypes from 'subschema/PropTypes';
 import MarkdownLess from './Markdown.less';
-import marked from 'marked';
+import Preview from './MarkdownPreview.jsx';
 
 export default class Markdown extends Component {
     static propTypes = {
@@ -28,10 +28,8 @@ export default class Markdown extends Component {
     }
 
     renderPreview(value) {
-        value = value || "### Click To Edit";
-        var __html = marked(value);
-        return <div onClick={this.handlePreview} className='clickable'
-                    dangerouslySetInnerHTML={{__html}}/>
+        value = value || "*Click To Edit*";
+        return <Preview onClick={this.handlePreview} value={value}/>
     }
 
     render() {

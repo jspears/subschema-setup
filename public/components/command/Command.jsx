@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import ExpandBox from './ExpandBox';
 import ExpandBoxTemplate from './ExpandBoxItem.jsx';
 import PT from '../../PropTypes';
+import Preview from '../MarkdownPreview.jsx';
 
 function flatten(cmds, api, seen, ret) {
     ret = ret || [];
@@ -63,7 +64,10 @@ export default class CommandList extends Component {
             var cmd = this.context.commands[key];
             return <ExpandBoxTemplate key={key+'-'+i} value={key} onChange={this.handleChange}
                                       isEnabled={this.isSelected(key)}
-                                      help={cmd.help} title={key}></ExpandBoxTemplate>
+                                      help={cmd.help} title={key}>
+
+                {cmd.description ? <Preview key="preview" value={cmd.description}/> : null}
+            </ExpandBoxTemplate>
 
         });
     }
