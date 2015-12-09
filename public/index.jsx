@@ -37,7 +37,18 @@ var conf = {
     schema, fieldsets: {template: "ExpandBox", fields}
 }
 
-var valueManager = ValueManager();
+var valueManager = ValueManager({
+    app: {
+        name: 'App'
+    },
+    template: {
+        name: 'Template'
+    },
+    package: {
+        name: 'app',
+        version: '1.0.0'
+    }
+});
 class Controller extends Component {
 
     static childContextTypes = {

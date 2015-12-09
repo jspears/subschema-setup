@@ -11,7 +11,9 @@ var api = {
         schema: {
             'name': {
                 type: 'Text',
-                validators: ['required', 'jsidentity']
+                validators: ['required', 'jsidentity'],
+                value: 'App',
+                help: 'What do you want your app class to be called'
             }
         }
     }
