@@ -11,7 +11,7 @@ var api = {
             'name': {
                 type: 'Text',
                 help: 'Name of Type',
-                validators: ['required']
+                validators: ['required', 'jsidentity']
             }
         }
     }

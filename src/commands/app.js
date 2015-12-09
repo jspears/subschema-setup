@@ -11,7 +11,7 @@ var api = {
         schema: {
             'name': {
                 type: 'Text',
-                validators: ['required']
+                validators: ['required', 'jsidentity']
             }
         }
     }

@@ -6,15 +6,7 @@ var api = {
     short: 'd',
     help: 'Setup as Github Pages demo',
     pre: ['app'],
-    post: ['package'],
-    schema: {
-        schema: {
-            host: {
-                type: 'Text',
-                validators: ['required']
-            }
-        }
-    }
+    post: ['package', 'git']
 };
 
 module.exports = api;

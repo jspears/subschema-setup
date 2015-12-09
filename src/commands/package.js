@@ -6,10 +6,8 @@ var licenses = require('spdx-license-ids/spdx-license-ids.json')
 var api = {
     exec: pkg,
     short: 'p',
-    value: function (value, conf, done) {
-
-    },
     help: 'Setup package.json',
+
     schema: {
         schema: {
             'name': {
@@ -41,7 +39,7 @@ var api = {
                     url: {
                         type: 'Text',
                         help: 'Url of repository',
-                        validators: ['required']
+                        validators: []
                     }
                 }
             },

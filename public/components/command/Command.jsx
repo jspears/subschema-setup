@@ -43,6 +43,9 @@ export default class CommandList extends Component {
     }
     handleChange = (key)=> {
         var value;
+        if (key === 'everything') {
+            return this.props.onChange(Object.keys(this.context.commands));
+        }
         if (!this.props.value) {
             value = [key];
         } else {
@@ -60,21 +63,35 @@ export default class CommandList extends Component {
     };
 
     renderOptions() {
-        return Object.keys(this.context.commands).map((key, i)=> {
+        var all = Object.keys(this.context.commands);
+
+        var ret = all.map((key, i)=> {
             var cmd = this.context.commands[key];
             return <ExpandBoxTemplate key={key+'-'+i} value={key} onChange={this.handleChange}
                                       isEnabled={this.isSelected(key)}
-                                      help={cmd.help} title={key}>
+                                      title={key}>
 
-                {cmd.description ? <Preview key="preview" value={cmd.description}/> : null}
+                {cmd.description ? <Preview key="preview" value={cmd.description}/> : cmd.help}
             </ExpandBoxTemplate>
 
         });
+        ret.push(<ExpandBoxTemplate key='everything' value='everything' onChange={this.handleChange}
+                                    isEnabled={this.isSelected('everything')}
+                                    title='everything'>
+
+            {'Do Everything'}
+        </ExpandBoxTemplate>)
+
+        return ret;
     }
 
     isSelected(key) {
+
         if (!this.props.value) {
             return false;
+        }
+        if (key === 'everything') {
+            return this.props.value.length === Object.keys(this.context.commands).length;
         }
         return this.props.value.indexOf(key) != -1;
     }

@@ -16,7 +16,8 @@ loader.addType({
 
 loader.addValidator({
     'package': require('./validators/package'),
-    'semver': require('./validators/semver')
+    'semver': require('./validators/semver'),
+    'jsidentity': require('./validators/jsidentity.js')
 });
 
 var schema = {}, fields = [];
@@ -84,7 +85,7 @@ export default class App extends Component {
                 }
             },
             fieldsets: [{
-                legend: 'Choose Actions',
+                legend: 'select',
                 fields: ['commands']
             }]
         }
@@ -96,7 +97,7 @@ export default class App extends Component {
                         subSchema: commands[cmd].schema.schema,
                         type: 'Object'
                     };
-                    var fields = commands[cmd].schema.fields || Object.keys(cmdSchema);
+                    var fields = commands[cmd].schema.fields || Object.keys(cmdSchema.subSchema);
                     defSchema.fieldsets.push({
                         legend: cmd,
                         fields: fields.map((f)=> {
@@ -108,10 +109,12 @@ export default class App extends Component {
         }
         defSchema.schema.done = {
             type: 'Content',
+            template: false,
+            className: ' ',
             content: 'All Done'
         }
         defSchema.fieldsets.push({
-            legend: 'Make Zip',
+            legend: 'download',
             fields: ['done']
         });
         return defSchema;
