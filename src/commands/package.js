@@ -51,16 +51,18 @@ var api = {
                 type: 'Text',
                 help: "Your name"
             },
-            licence: {
+            license: {
                 type: 'Autocomplete',
-                options: licenses
+                options: licenses,
+                help: 'The license to use'
             },
             dependencies: {
                 keyType: {type: 'Text', title: ' Name'},
                 canAdd: true,
                 canDelete: true,
                 valueType: {type: 'Text', title: 'Version', validators: ['semver']},
-                type: 'Mixed'
+                type: 'Mixed',
+                help:'Extra dependencies'
             }
         },
         fields: ['name', 'private', 'version', 'description', 'repository', 'keywords', 'author', 'license', 'dependencies']
