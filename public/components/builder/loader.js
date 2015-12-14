@@ -10,7 +10,7 @@ import InputFalse from './InputFalse.jsx';
 import ToggleTemplate from './ToggleTemplate.jsx';
 import ExpressionSelect from './ExpressionSelect.jsx';
 import ModalCreateTemplate from './ModalCreateTemplate.jsx';
-
+import LabelValue from './LabelValue.jsx';
 var loader = loaderFactory([DefaultLoader]);
 loader.addType({
     FieldSetBuilder,
@@ -23,6 +23,7 @@ loader.addValidator({
     cssClass
 });
 loader.addTemplate({
+    LabelValue,
     ToggleTemplate,
     ModalCreateTemplate
 })

@@ -16,6 +16,7 @@ var schema = {
                 type:'TypeBuilder'
             },
             createTemplate: 'ModalCreateTemplate',
+
             canAdd: true,
             canEdit: true,
             canRemove: true
@@ -76,8 +77,8 @@ class SchemaBuilderContext extends Component {
 class SchemaView extends Component {
     @listen("value", null)
     setSchema(schema) {
-   //     var {_templates,_types, _processors, _validators, _allFields, _operators, ...rest } = schema;
-        this.setState({schema: schema});
+        var {_templates,_types, _processors, _validators, _allFields, _operators, ...rest } = schema;
+        this.setState({schema: rest});
     }
 
     render() {

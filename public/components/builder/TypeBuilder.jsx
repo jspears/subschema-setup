@@ -16,7 +16,7 @@ function makeSchema(loader, type) {
     var schema = {
         fieldsets: [
             {
-                legend: 'Configure',
+//                legend: 'Configure',
                 className:'max-height'
                 ,
                 fieldsets: [
@@ -149,6 +149,7 @@ function toType(loader, propType, defaultValue) {
     if (propType === PropTypes.options) {
         return {
             type: 'List',
+            labelKey:'label',
             title: 'Options',
             canAdd: true,
             canEdit: true,

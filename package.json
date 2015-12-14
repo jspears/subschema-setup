@@ -36,7 +36,7 @@
     "semver": "^5.1.0",
     "spdx-license-ids": "^1.1.0",
     "style-loader": "^0.13.0",
-    "subschema": "^0.52.0",
+    "subschema": "^0.52.3",
     "terminal-menu": "^2.1.1",
     "validate-npm-package-name": "^2.2.2",
     "webpack": "^1.12.9",
