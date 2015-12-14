@@ -21,7 +21,7 @@ function pad(val, size) {
 
 function helpLine(conf, short, long, describe) {
     short = short ? `-${short}` : short;
-    conf.message(`\t${pad(short, 10)}\t--${pad(long, 20)}\t${pad(describe, 200)}`)
+    conf.message(` ${pad(short, 19)}${pad('--'+long, 30)}${pad(describe, 200)}`)
 }
 
 
