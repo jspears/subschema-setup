@@ -1,29 +1,64 @@
 "use strict";
+
 import React, {Component} from 'react';
-import subschema, {loaderFactory, tutils, decorators, types, DefaultLoader, Editor, PropTypes, ValueManager} from 'subschema';
+
+import Subschema, {loaderFactory, tutils, decorators, types, DefaultLoader, Editor, PropTypes, ValueManager} from 'subschema/index.jsx';
+
 var {listen} = decorators;
 var {each, FREEZE_OBJ} = tutils;
-var {Object} = types;
+var ObjectType = types.Object;
 
 function toLabelVal(t) {
     return {label: t.name, val: t.name}
 }
 
 function makeSchema(loader, type) {
-
+    var fields = ['type', 'title', 'placeholder', 'className'];
     var schema = {
+        fieldsets: [
+            {
+                legend: 'Configure Type',
+                fields
+            },
+            {
+                legend: 'Template',
+                template: 'ToggleTemplate',
+                fields: ['template']
+            },
+            {
+                legend: 'Validators',
+                template: 'ToggleTemplate',
+                fields: ['validators']
+            },
+            {
+                legend: 'Advanced',
+                template: 'ToggleTemplate',
+                fields: ['name', 'dataType', 'fieldAttrs']
+            }
+        ],
         schema: {
             type: {
-                type: 'Select',
+                type: 'ExpressionSelect',
                 help: 'The type of the component',
-                options: loader.listTypes().map(toLabelVal)
+                placeholder: 'Text',
+                optionsPath: '_types'
             },
+            title: {
+                type: 'InputFalse',
+                help: 'The text in the label to use (unchecking will use no title)'
+            },
+            placeholder: {
+                type: 'Text',
+                help: 'Placeholder text'
+            },
+
             template: {
                 type: 'Object',
                 subSchema: {
                     template: {
                         type: 'SelectDefault',
                         help: 'Template for type',
+                        placeholder: 'Default - EditorTemplate',
                         options: loader.listTemplates().map((t)=> {
                             return {
                                 label: t.name,
@@ -40,19 +75,16 @@ function makeSchema(loader, type) {
             },
             name: {
                 type: 'Text',
-                help: 'The input field name '
+                help: 'The input field name'
             },
             className: {
                 type: 'Text',
+                help: 'CSS Class for Type',
                 validators: ['cssClass']
             },
             dataType: {
                 type: 'Text',
                 help: 'The dataType for input components ie. input <type="checkbox">'
-            },
-            placeholder: {
-                type: 'Text',
-                help: 'Placeholder text'
             },
             fieldAttrs: {
                 type: 'Mixed',
@@ -61,6 +93,26 @@ function makeSchema(loader, type) {
                 canEdit: true,
                 keyType: 'Text',
                 valueType: 'Text'
+            },
+            validators: {
+                type: 'List',
+                title: false,
+                template: false,
+                canAdd: true,
+                canDelete: true,
+                canEdit: true,
+                canReorder: true,
+                itemType: {
+                    type: 'Object',
+                    subSchema: {
+                        'message': 'Text',
+                        'type': {
+                            type: 'Select',
+                            options: loader.listValidators().map(toLabelVal)
+                        }
+                    },
+                    fields: ['message', 'type']
+                }
             }
         }
     }
@@ -75,7 +127,11 @@ function makeSchema(loader, type) {
     var Type = loader.loadType(type);
     var defProps = Type.defaultProps || FREEZE_OBJ;
     each(Type.propTypes, (propType, key)=> {
-        schema[key] = toType(loader, propType, defProps[key]);
+        if (Editor.fieldPropTypes[key] || propType === PropTypes.value || propType === PropTypes.valueEvent || propType === PropTypes.targetEvent) {
+            return
+        }
+        schema.schema[key] = toType(loader, propType, defProps[key]);
+        fields.push(key);
     });
 
     return schema;
@@ -85,7 +141,11 @@ function toType(loader, propType, defaultValue) {
     if (propType === PropTypes.options) {
         return {
             type: 'List',
-            help: 'Options',
+            title: 'Options',
+            canAdd: true,
+            canEdit: true,
+            canReorder: true,
+            canRemove: true,
             itemType: {
                 type: 'Object',
                 subSchema: {
@@ -106,7 +166,8 @@ function toType(loader, propType, defaultValue) {
     if (propType === PropTypes.cssClass) {
         return {
             type: 'Text',
-            help: 'CSS Class'
+            help: 'CSS Class Name',
+            validators: ['css']
         }
     }
     if (propType === PropTypes.processor) {
@@ -126,13 +187,24 @@ function toType(loader, propType, defaultValue) {
             type: 'SchemaBuilder'
         }
     }
+    if (propType === PropTypes.bool) {
+        return {
+            type: 'Checkbox'
+        }
+    }
 }
 
 
 export default class TypeBuilder extends Component {
     static propTypes = {
-        onChange: PropTypes.valueEvent
+        onChange: PropTypes.valueEvent,
+        path: PropTypes.path
     }
+    static contextTypes = PropTypes.contextTypes;
+
+    static inputClassName = ' ';
+    static template = false;
+    static noTemplate = true;
 
     constructor(...props) {
         super(...props);
@@ -141,14 +213,19 @@ export default class TypeBuilder extends Component {
         }
     }
 
-    @listen('value', '.type')
+    @listen('value', '.type', true)
     typeChange(type) {
         this.schema = makeSchema(this.context.loader, type || 'Text');
+        console.log('typeChange', type, this.schema);
+        this.forceUpdate();
     }
 
     render() {
+        if (!this.schema) {
+
+        }
         return <div {...this.props}>
-            <Object schema={this.schema}/>
+            <ObjectType schema={this.schema} valueManager={this.context.valueManager} path={this.props.path}/>
         </div>
     }
 }
