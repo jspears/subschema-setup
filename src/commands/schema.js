@@ -12,7 +12,10 @@ var api = {
                 help: 'The Name of your schema',
                 validators: 'required'
             },
-            schema: 'SchemaBuilder'
+            schema:{
+                type:'SchemaBuilder',
+                help:'a schema'
+            }
         },
         fields: ['name', 'schema']
     }

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "moch test/*-test.js",
+    "test": "mocha test/*-test.js",
     "hot": "webpack-dev-server --config ./webpack/hot.webpack.config.js"
   },
   "author": "",
@@ -25,6 +25,7 @@
     "marked": "^0.3.5",
     "mocha": "^2.3.4",
     "node-menu": "0.0.9",
+    "parse-author": "^0.2.0",
     "postcss": "^5.0.12",
     "postcss-color-rebeccapurple": "^2.0.0",
     "react": "^0.14.3",

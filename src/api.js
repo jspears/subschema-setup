@@ -9,7 +9,7 @@ function process(conf, done) {
     function handleCmd(cmd) {
         var cmdObj, pre = [], post = [], exe = cmd;
         if (typeof cmd === 'string') {
-            cmdObj = commands[cmd], pre = toArray(cmdObj.pre), post = toArray(cmdObj.post), exe = cmdObj.exec;
+            cmdObj = api.commands[cmd], pre = toArray(cmdObj.pre), post = toArray(cmdObj.post), exe = cmdObj.exec;
             if (cmdMap[cmd]) {
                 return cmdMap[cmd];
             }
@@ -38,8 +38,8 @@ function process(conf, done) {
 
 
 }
-
-
-module.exports = {
+var api = {
     process
-};
+}
+
+module.exports = api;

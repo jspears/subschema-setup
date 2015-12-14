@@ -3,7 +3,7 @@ var util = require('../util');
 
 var api = {
     exec: template,
-    short: 'M',
+    short: 'm',
     help: 'Setup a Simple Template',
     deps: ['git'],
     schema: {
