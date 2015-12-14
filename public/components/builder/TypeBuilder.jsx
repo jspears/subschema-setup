@@ -1,7 +1,6 @@
 "use strict";
 
 import React, {Component} from 'react';
-
 import Subschema, {loaderFactory, tutils, decorators, types, DefaultLoader, Editor, PropTypes, ValueManager} from 'subschema/index.jsx';
 
 var {listen} = decorators;
@@ -17,23 +16,30 @@ function makeSchema(loader, type) {
     var schema = {
         fieldsets: [
             {
-                legend: 'Configure Type',
-                fields
-            },
-            {
-                legend: 'Template',
-                template: 'ToggleTemplate',
-                fields: ['template']
-            },
-            {
-                legend: 'Validators',
-                template: 'ToggleTemplate',
-                fields: ['validators']
-            },
-            {
-                legend: 'Advanced',
-                template: 'ToggleTemplate',
-                fields: ['name', 'dataType', 'fieldAttrs']
+                legend: 'Configure',
+                className:'max-height'
+                ,
+                fieldsets: [
+                    {
+                        legend: 'Type',
+                        template: 'ToggleTemplate',
+                        fields
+                    },
+                    {
+                        legend: 'Template',
+                        template: 'ToggleTemplate',
+                        fields: ['template', 'help']
+                    },
+                    {
+                        legend: 'Validators',
+                        template: 'ToggleTemplate',
+                        fields: ['validators']
+                    },
+                    {
+                        legend: 'Advanced',
+                        template: 'ToggleTemplate',
+                        fields: ['name', 'dataType', 'fieldAttrs']
+                    }]
             }
         ],
         schema: {
@@ -51,7 +57,10 @@ function makeSchema(loader, type) {
                 type: 'Text',
                 help: 'Placeholder text'
             },
-
+            help: {
+                type: 'Text',
+                help: 'Help Content'
+            },
             template: {
                 type: 'Object',
                 subSchema: {
@@ -59,12 +68,7 @@ function makeSchema(loader, type) {
                         type: 'SelectDefault',
                         help: 'Template for type',
                         placeholder: 'Default - EditorTemplate',
-                        options: loader.listTemplates().map((t)=> {
-                            return {
-                                label: t.name,
-                                val: t.name
-                            }
-                        })
+                        optionsPath: '_templates'
                     },
                     className: {
                         type: 'Text',
@@ -107,8 +111,8 @@ function makeSchema(loader, type) {
                     subSchema: {
                         'message': 'Text',
                         'type': {
-                            type: 'Select',
-                            options: loader.listValidators().map(toLabelVal)
+                            type: 'ExpressionSelect',
+                            optionsPath: '_validators'
                         }
                     },
                     fields: ['message', 'type']
@@ -116,28 +120,32 @@ function makeSchema(loader, type) {
             }
         }
     }
-    /*     name: PropTypes.name,
-     onChange: PropTypes.targetEvent,
-     onBlur: PropTypes.blurEvent,
-     className: PropTypes.cssClass,
-     id: PropTypes.id,
-     type: PropTypes.dataType,
-     fieldAttrs: PropTypes.fieldAttrs,
-     placeholder: PropTypes.placeholder*/
+
     var Type = loader.loadType(type);
     var defProps = Type.defaultProps || FREEZE_OBJ;
     each(Type.propTypes, (propType, key)=> {
         if (Editor.fieldPropTypes[key] || propType === PropTypes.value || propType === PropTypes.valueEvent || propType === PropTypes.targetEvent) {
             return
         }
-        schema.schema[key] = toType(loader, propType, defProps[key]);
-        fields.push(key);
+        var type = toType(loader, propType, defProps[key]);
+        if (type != null) {
+            schema.schema[key] = type;
+            fields.push(key);
+        }
     });
 
     return schema;
 }
 
+var ignorePropTypes = [
+    PropTypes.valueEvent,
+    PropTypes.targetEvent,
+    PropTypes.event
+];
+ignorePropTypes.push.apply(ignorePropTypes, ignorePropTypes.map(v=>v.isRequired));
+
 function toType(loader, propType, defaultValue) {
+    if (ignorePropTypes.indexOf(propType) > -1) return;
     if (propType === PropTypes.options) {
         return {
             type: 'List',
@@ -157,36 +165,58 @@ function toType(loader, propType, defaultValue) {
     }
     if (propType === PropTypes.template) {
         return {
-            type: 'Select',
+            type: 'ExpressionSelect',
             help: 'Custom Template',
             defaultValue,
-            options: loader.listTemplates().map(toLabelVal)
+            optionsPath: '_templates'
         }
     }
     if (propType === PropTypes.cssClass) {
         return {
             type: 'Text',
             help: 'CSS Class Name',
-            validators: ['css']
+            validators: ['cssClass']
         }
     }
     if (propType === PropTypes.processor) {
         return {
-            type: 'Select',
+            type: 'ExpressionSelect',
             help: 'Processor',
-            options: loader.listProcessors().map(toLabelVal)
+            optionsPath: '_processors'
+        }
+    }
+    if (propType === PropTypes.template) {
+        return {
+            type: 'ExpressionSelect',
+            help: 'Template',
+            optionsPath: '_templates'
+        }
+    }
+    if (propType === PropTypes.content) {
+        return {
+            type: 'Text',
+            help: 'Content Expression'
         }
     }
     if (propType === PropTypes.type) {
         return {
-            type: 'TypeBuilder'
+            type: 'ExpressionSelect',
+            optionsPath: '_types'
         }
     }
+
     if (propType === PropTypes.schema) {
         return {
             type: 'SchemaBuilder'
         }
     }
+    if (propType === PropTypes.number) {
+        return {
+            type: 'Number'
+        }
+    }
+
+
     if (propType === PropTypes.bool) {
         return {
             type: 'Checkbox'
@@ -206,26 +236,14 @@ export default class TypeBuilder extends Component {
     static template = false;
     static noTemplate = true;
 
-    constructor(...props) {
-        super(...props);
-        this.state = {
-            type: 'Text'
-        }
-    }
-
     @listen('value', '.type', true)
     typeChange(type) {
         this.schema = makeSchema(this.context.loader, type || 'Text');
-        console.log('typeChange', type, this.schema);
+        console.log('typeChange', JSON.stringify(this.schema, null, 2));
         this.forceUpdate();
     }
 
     render() {
-        if (!this.schema) {
-
-        }
-        return <div {...this.props}>
-            <ObjectType schema={this.schema} valueManager={this.context.valueManager} path={this.props.path}/>
-        </div>
+        return <ObjectType {...this.props} schema={this.schema}/>
     }
 }

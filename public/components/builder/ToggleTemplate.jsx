@@ -7,25 +7,34 @@ import Checkbox from 'subschema/types/Checkbox';
 export default class ToggleTemplate extends Component {
     static propTypes = {
         buttons: PropTypes.buttons,
-        legend: PropTypes.node,
+        legend: PropTypes.string.isRequired,
+        expand: PropTypes.bool,
         className: PropTypes.cssClass,
         onButtonClick: PropTypes.event,
         onClick: PropTypes.event
     }
 
     static defaultProps = {
-        toggle: false
+        expand: false
     }
 
     constructor(props, ...args) {
         super(props, ...args);
         this.state = {
-            toggle: props.toggle
+            expand: props.expand
         }
     }
 
-    handleToggle = (toggle)=> {
-        this.setState({toggle});
+    componentWillReceiveProps(props) {
+        if (props.expand != this.props.expand) {
+            this.setState({expand: props.expand});
+        }
+    }
+
+    handleToggle = (e)=> {
+        e && e.preventDefault();
+        e && e.stopPropagation();
+        this.setState({expand: !this.state.expand});
     };
 
 
@@ -43,15 +52,10 @@ export default class ToggleTemplate extends Component {
 
     render() {
         var {legend, buttons, className, ...rest} = this.props.field || {};
-        return legend ?
-            <fieldset className={className} key='fieldset'>
-                <legend>{legend} <Checkbox onChange={this.handleToggle} checked={this.state.toggle}/></legend>
-                {this.state.toggle ? this.props.children : null}
-                {this.state.toggle ? this.renderButtons(buttons) :null}
-            </fieldset> :
-            <div className={className} key='div-fieldset'>
-                {this.state.toggle ? this.props.children : null}
-                {this.state.toggle ? this.renderButtons(buttons) :null}
-            </div>
+        return <fieldset className={className} key='fieldset'>
+            <legend className='clickable' onClick={this.handleToggle}>{legend}</legend>
+            {this.state.expand ? this.props.children : null}
+            {this.state.expand ? this.renderButtons(buttons) :null}
+        </fieldset>
     }
 }

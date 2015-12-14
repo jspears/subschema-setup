@@ -1,51 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import ExpandBox from './components/command/ExpandBox';
-import Subschema, {Form, loader, ValueManager} from 'subschema/index.jsx';
-import BuilderLoader from './components/builder/loader';
-loader.addLoader(BuilderLoader);
-
-var schema = {
-    schema: {
-        schema: {
-            type: 'Mixed',
-            valueType: 'TypeBuilder',
-            canAdd: true,
-            canEdit: true,
-            canRemove: true
-        },
-        fieldsets: {
-            type: 'List',
-            canAdd: true,
-            canEdit: true,
-            canRemove: true,
-            canReorder: true,
-            itemType: {
-                type: 'Object',
-                subSchema: {
-                    legend: 'Text',
-                    fields: {
-                        type: 'List',
-                        canAdd: true,
-                        canEdit: true,
-                        canRemove: true,
-                        canReorder: true,
-                        itemType: {
-                            type: 'ExpressionSelect',
-                            options: '_allFields'
-                        }
-                    }
-                },
-                fields: ['legend', 'fields']
-            }
-        }
-    },
-    fieldsets: [{
-        legend: 'Schema Builder', fields: ['schema', //'fieldsets'
-        ]
-    }]
-}
-
+import Subschema, {Form, loader, loaderFactory, DefaultLoader, ValueManager} from 'subschema/index.jsx';
+import SchemaBuilder from './components/builder/SchemaBuilder.jsx';
 var valueManager = ValueManager({
     schema: {
         name: {
@@ -64,10 +21,7 @@ var valueManager = ValueManager({
     fieldsets: [{
         legend: 'Mr So and So',
         fields: ['name', 'title']
-    }],
-    _templates: loader.listTemplates().map((v)=>v.name),
-    _types: loader.listTypes().map((v)=>v.name),
-    _validators: loader.listValidators().map((v)=>v.name)
+    }]
 });
 
 valueManager.addListener('schema', function (val, old, path) {
@@ -77,5 +31,4 @@ valueManager.addListener('schema', function (val, old, path) {
     }
 }, null, true);
 
-ReactDOM.render(<Form schema={schema} loader={loader}
-                      valueManager={valueManager}/>, document.getElementById('content'));
+ReactDOM.render(<SchemaBuilder loader={loader}  valueManager={valueManager}/>, document.getElementById('content'));
