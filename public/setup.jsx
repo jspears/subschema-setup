@@ -6,7 +6,7 @@ import commands from './commands';
 import PT from './PropTypes';
 import PropTypes from 'subschema/PropTypes';
 import listen from 'subschema/decorators/listen';
-import indexLess from './index.less';
+import indexLess from './../../subschema-builder/public/index.less';
 import api from '../src/api';
 
 loader.addType({
